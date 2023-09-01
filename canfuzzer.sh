@@ -4,7 +4,7 @@ pip3 install -r requirements.txt
 echo "Done checking dependencies"
 sudo ip link set can0 up type can bitrate 250000
 echo "CAN Interface up with 250000 baudrate"
-echo "Downloading CANFuzzeriyguyfuyf8"
+echo "Downloading CANFuzzer"
 git clone https://github.com/ankitha-2129/CANFUZZER.git
 echo "Initializing GUI"
-python3 canlinuxgui.py
+python3 CANFUZZER/canlinuxgui.py
