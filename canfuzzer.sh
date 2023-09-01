@@ -12,6 +12,7 @@ if [ $your_command_status -eq 0 ]; then
         pip3 install -r CANFUZZER/requirements.txt
         echo "Done checking dependencies"
         echo "Initializing GUI"
+        sudo ip link set can0 txqueuelen 500000
         python3 CANFUZZER/canlinuxgui.py  
     else
         echo "Downloading CANFuzzer"
@@ -20,6 +21,7 @@ if [ $your_command_status -eq 0 ]; then
         pip3 install -r CANFUZZER/requirements.txt
         echo "Done checking dependencies"
         echo "Initializing GUI"
+        sudo ip link set can0 txqueuelen 500000
         python3 CANFUZZER/canlinuxgui.py
     fi
 else
