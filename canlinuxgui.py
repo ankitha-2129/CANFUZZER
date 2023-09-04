@@ -32,9 +32,9 @@ class App(customtkinter.CTk):
         # exits the program when the window is closed by the user
         self.font = customtkinter.CTkFont(family="Rockwell", size=15)
 
-        self.title("CANFUZZER")
+        self.title("FUZZER")
         self.geometry(f"{1280}x{720}")
-        self.attributes("-fullscreen", True)
+        #self.attributes("-fullscreen", True)
         
         self.bind("<1>", lambda event: event.widget.focus_set())
         # configure grid layout (4x4)
