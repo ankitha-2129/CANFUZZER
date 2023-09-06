@@ -30,7 +30,7 @@ class App(customtkinter.CTk):
         customtkinter.set_default_color_theme("blue")
         
         # exits the program when the window is closed by the user
-        self.font = customtkinter.CTkFont(family="Rockwell", size=30)
+        self.font = customtkinter.CTkFont(family="Rockwell", size=40)
 
         self.title("FUZZER")
         self.geometry(f"{1280}x{720}")
