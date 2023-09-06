@@ -417,7 +417,7 @@ class App(customtkinter.CTk):
                 tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
             elif not duration.isdigit():
                 self.textbox_packet_2.configure(border_color="red")
-                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID")
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
             else:
                 self.textbox_packet_2.configure(border_color="gray50")
                 end_time = time.time() + float(duration)
