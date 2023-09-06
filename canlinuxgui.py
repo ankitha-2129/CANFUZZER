@@ -400,11 +400,11 @@ class App(customtkinter.CTk):
         seconds = self.textbox_packet_2.get("0.0", "end").strip()
         bitrate_var = self.combo_bitrate.get()
         if can_interface_val == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE SELECT VALID INTERFACE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID INTERFACE")
         elif bitrate_var == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE SELECT VALID BITRATE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID BITRATE")
         elif seconds == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID DURATION")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
             self.textbox_packet_2.configure(border_color="red")
         else:    
             self.textbox_packet_2.configure(border_color="gray50")
@@ -414,10 +414,10 @@ class App(customtkinter.CTk):
             can_device_id = self.combobox_device_var.get()
             # selected_can_id_decimal = int(can_device_id, 16)
             if not duration:
-                tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID DURATION")
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
             elif not duration.isdigit():
                 self.textbox_packet_2.configure(border_color="red")
-                tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID")
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID")
             else:
                 self.textbox_packet_2.configure(border_color="gray50")
                 end_time = time.time() + float(duration)
@@ -476,9 +476,9 @@ class App(customtkinter.CTk):
         can_interface_val = self.combobox_interface.get()
         bitrate_var = self.combo_bitrate.get()
         if can_interface_val == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE SELECT VALID INTERFACE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID INTERFACE")
         elif bitrate_var == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE SELECT VALID BITRATE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID BITRATE")
         else:
             self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)
             self.button_2.configure(state="enabled", text="STOP FUZZING")
@@ -524,11 +524,11 @@ class App(customtkinter.CTk):
         bitrate_var = self.combo_bitrate.get()
         packets = self.textbox_packet.get("0.0", "end").strip()
         if can_interface_val == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE SELECT VALID INTERFACE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID INTERFACE")
         elif bitrate_var == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE SELECT VALID BITRATE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID BITRATE")
         elif packets == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID NUMBER OF PACKETS")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID NUMBER OF PACKETS")
             self.textbox_packet.configure(border_color="red")
         else:  
             self.textbox_packet.configure(border_color="gray50")
@@ -544,7 +544,7 @@ class App(customtkinter.CTk):
             if n.isdigit():
                 n = int(n)
                 if n == 0:
-                    tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID NUMBER OF PACKETS")
+                    tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID NUMBER OF PACKETS")
                 else:
                     for x in range(n):
                         a=random.randint(1,255)
@@ -564,7 +564,7 @@ class App(customtkinter.CTk):
                 self.can_bus.shutdown()
             else:
                 # Handle invalid input
-                tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID DATA")
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DATA")
 
 
     def add_line(self,msg):
@@ -579,16 +579,16 @@ class App(customtkinter.CTk):
         bitrate_var = self.combo_bitrate.get()
         can_interface_val = self.combobox_interface.get()
         if bitrate_var == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID BITRATE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID BITRATE")
         elif can_interface_val == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID INTERFACE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID INTERFACE")
         else:
             answer = customtkinter.CTkInputDialog(text = "ENTER DURATION TO SNIFF PACKETS", title="DURATION")
             self.input_var = answer.get_input()
             if self.input_var == "":
-                tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID DURATION")
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
             elif not self.input_var.isdigit():
-                tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID DURATION")
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
             else:
                 self.sniff_can_messages()
                 # self.load_can_id()
@@ -607,7 +607,7 @@ class App(customtkinter.CTk):
                 CTkScrollableDropdown(self.combobox_device, values=self.hex_values)
                 self.combobox_device.set(self.hex_values[0])
         except:
-            tkinter.messagebox.showerror("Error", "File is Empty Please Check the Connection and Try Again")
+            tkinter.messagebox.showerror("ERROR MESSAGE", "File is Empty Please Check the Connection and Try Again")
 
     ####SCAN PACKETS AND SORT UNIQUE NODES BACKEND                
     def sort_can_id(self):
@@ -631,9 +631,9 @@ class App(customtkinter.CTk):
         can_interface_val = self.combobox_interface.get()
         bitrate_var = self.combo_bitrate.get()
         if can_interface_val == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID INTERFACE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID INTERFACE")
         elif bitrate_var == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID BITRATE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID BITRATE")
         else:   
             self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)        
             self.textbox_display.delete("1.0", customtkinter.END)
@@ -693,18 +693,18 @@ class App(customtkinter.CTk):
 
         bitrate_var = self.combo_bitrate.get()
         if can_interface_val == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID INTERFACE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID INTERFACE")
         elif bitrate_var == "":
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID BITRATE")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID BITRATE")
         elif not duration and not data_flood:
             tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID DURATION")
             self.textbox_packet_hexa.configure(border_color="red")
             self.textbox_packet_2.configure(border_color="red")
         elif not duration.isdigit():
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID DURATION")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
             self.textbox_packet_2.configure(border_color="red")
         elif data_flood not in ["00", "FF"] or len(data_flood) != 2:
-            tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID DATA 00 or FF")
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DATA 00 or FF")
             self.textbox_packet_hexa.configure(border_color="red")
         else:
             self.textbox_packet_2.configure(border_color="gray50")
@@ -755,13 +755,13 @@ class App(customtkinter.CTk):
 
             # Validation check for first_bit
             if first_bit not in ["0", "1"]:
-                tkinter.messagebox.showinfo(title="Error", message="first_bit MUST BE EITHER 0 or 1")
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="first_bit MUST BE EITHER 0 or 1")
                 self.textbox_packet_first_bit.configure(border_color="red")
             elif last_hex_digits == "":
-                tkinter.messagebox.showinfo(title="Error", message="last_hex_digits MUST BE A VALID two-digit NUMBER") 
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="last_hex_digits MUST BE A VALID two-digit NUMBER") 
                 self.textbox_packet_first_can_id.configure(border_color="red")
             elif first_bit == "" and last_hex_digits == "":
-                tkinter.messagebox.showinfo(title="Error", message="PLEASE ENTER VALID DATA")
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DATA")
                 self.textbox_packet_first_bit.configure(border_color="red")
                 self.textbox_packet_first_can_id.configure(border_color="red")
                 return
@@ -772,14 +772,14 @@ class App(customtkinter.CTk):
 
             # Validation check for last_hex_digits
             if not all(c in "0123456789" for c in last_hex_digits) or len(last_hex_digits) != 2:
-                tkinter.messagebox.showinfo(title="Error", message="last_hex_digits MUST BE A VALID two-digit NUMBER")
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="last_hex_digits MUST BE A VALID two-digit NUMBER")
                 self.textbox_packet_first_can_id.configure(border_color="red")
                 return
 
             if can_interface_val == "":
-                tkinter.messagebox.showinfo(title="Error", message="PLEASE SELECT VALID INTERFACE")
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID INTERFACE")
             elif bitrate_var == "":
-                tkinter.messagebox.showinfo(title="Error", message="PLEASE SELECT VALID BITRATE")
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID BITRATE")
             else:
                 self.textbox_packet_first_bit.configure(border_color="gray50")
                 self.textbox_packet_first_can_id.configure(border_color="gray50")
@@ -794,7 +794,7 @@ class App(customtkinter.CTk):
                 
                     if not self.is_valid_hexa(can_id):
                         print("Invalid CAN ID generated. Exiting.")
-                        tkinter.messagebox.showinfo(title="Error", message="Invalid CAN ID generated. Exiting.")
+                        tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="Invalid CAN ID generated. Exiting.")
                         return
                 
                     can_id_in_int = int(can_id,16)
