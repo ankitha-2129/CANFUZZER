@@ -30,7 +30,7 @@ class App(customtkinter.CTk):
         customtkinter.set_default_color_theme("blue")
         
         # exits the program when the window is closed by the user
-        self.font = customtkinter.CTkFont(family="Rockwell", size=15)
+        self.font = customtkinter.CTkFont(family="Rockwell", size=30)
 
         self.title("FUZZER")
         self.geometry(f"{1280}x{720}")
@@ -46,11 +46,11 @@ class App(customtkinter.CTk):
         self.can_bus = None
 
         self.tagline_font = customtkinter.CTkFont(
-            family="Rockwell", size=30, weight="bold"
+            family="Rockwell", size=40, weight="bold"
         )
         
         self.display_font = customtkinter.CTkFont(
-            family="Rockwell", size=15, weight="bold"
+            family="Rockwell", size=20, weight="bold"
         )
         
         # create sidebar frame with widgets
@@ -69,9 +69,9 @@ class App(customtkinter.CTk):
         self.logo_label.grid(row=0, column=1, pady=10, sticky="nsew", columnspan=2)
         
         # create displaybox
-        self.textbox_display = customtkinter.CTkTextbox(self, width=500, height=700, corner_radius=20, border_width=2, border_color="gray50", font=self.display_font)
+        self.textbox_display = customtkinter.CTkTextbox(self, width=300, height=700, corner_radius=20, border_width=2, border_color="gray50", font=self.display_font)
         self.textbox_display.grid(row=1, column=1, padx=10, pady=10, sticky="nsew", rowspan=10)
-        self.textbox_display.insert("0.0", "CAN FUZZER INITIATING..................)")
+        self.textbox_display.insert("0.0", "CAN FUZZER INITIATING..................")
 
         # create text input Frame for bitrate and can interface 
         self.bitrate_var = tkinter.StringVar()
@@ -124,7 +124,7 @@ class App(customtkinter.CTk):
         self.automatic_attack_frame.grid_columnconfigure(0, weight=1)
         self.automatic_attack_frame.grid_rowconfigure(0, weight=1)
         
-        # # Load Can Device 
+        # # SCAN Can Device 
         self.hex_values = []
         self.combobox_device_var = customtkinter.StringVar()
         self.button_1 = customtkinter.CTkButton(master=self.automatic_attack_frame, border_width=1, text="SCAN CAN DEVICE ID's", command=self.open_input_dialog_event)
@@ -404,7 +404,7 @@ class App(customtkinter.CTk):
         elif bitrate_var == "":
             tkinter.messagebox.showinfo(title="Error", message="Please Enter Valid Bitrate")
         elif seconds == "":
-            tkinter.messagebox.showinfo(title="Error", message="Please Enter Valid Seconds")
+            tkinter.messagebox.showinfo(title="Error", message="Please Enter Valid Duration")
             self.textbox_packet_2.configure(border_color="red")
         else:    
             self.textbox_packet_2.configure(border_color="gray50")
@@ -414,10 +414,10 @@ class App(customtkinter.CTk):
             can_device_id = self.combobox_device_var.get()
             # selected_can_id_decimal = int(can_device_id, 16)
             if not duration:
-                tkinter.messagebox.showinfo(title=Error, message="Please Enter Valid Duration")
+                tkinter.messagebox.showinfo(title="Error", message="Please Enter Valid Duration")
             elif not duration.isdigit():
                 self.textbox_packet_2.configure(border_color="red")
-                tkinter.messagebox.showinfo(title=Error, message="Please Enter Valid Duration")
+                tkinter.messagebox.showinfo(title="Error", message="Please Enter Valid Duration")
             else:
                 self.textbox_packet_2.configure(border_color="gray50")
                 end_time = time.time() + float(duration)
