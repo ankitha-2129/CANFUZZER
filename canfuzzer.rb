@@ -2,7 +2,7 @@
 require 'open3'
 
 # Execute the command and capture its exit status
-command = "sudo ip link set can0 up type can bitrate 250000"
+command = "sudo ip link set can0 down && sudo ip link set can0 up type can bitrate 250000 && sudo ip link set can0 txqueuelen 500000"
 stdout, stderr, status = Open3.capture3(command)
 
 if status.success?
@@ -15,7 +15,6 @@ if status.success?
     system("pip3 install -r #{folder_name}/requirements.txt")
     puts "Done checking dependencies"
     puts "Initializing GUI"
-    system("sudo ip link set can0 txqueuelen 500000")
     system("python3 #{folder_name}/canlinuxgui.py")
   else
     puts "Downloading CANFuzzer"
@@ -24,7 +23,6 @@ if status.success?
     system("pip3 install -r #{folder_name}/requirements.txt")
     puts "Done checking dependencies"
     puts "Initializing GUI"
-    system("sudo ip link set can0 txqueuelen 500000")
     system("python3 #{folder_name}/canlinuxgui.py")
   end
 else
