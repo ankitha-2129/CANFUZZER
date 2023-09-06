@@ -770,7 +770,7 @@ class App(customtkinter.CTk):
 
 
             # Validation check for last_hex_digits
-            if not all(c in "0123456789abcdefABCDEF" for c in last_hex_digits) or len(last_hex_digits) != 2:
+            if not all(c in "0123456789" for c in last_hex_digits) or len(last_hex_digits) != 2:
                 tkinter.messagebox.showinfo(title="Error", message="last_hex_digits must be a valid two-digit hexadecimal number")
                 self.textbox_packet_first_can_id.configure(border_color="red")
                 return
