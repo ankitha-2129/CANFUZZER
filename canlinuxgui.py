@@ -7,20 +7,19 @@ import random
 import threading
 import re
 import platform
-#import tkinter.font as tkFont
 from CTkScrollableDropdown import *
+from can.interfaces.virtual import VirtualBus
 from customtkinter import CTkLabel,CTkFont
-#from can.interfaces.virtual import VirtualBus
 #from CTkMessagebox import CTkMessagebox
 
 
 class ToplevelWindow(customtkinter.CTkToplevel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.geometry("400x300")
+        self.geometry("200x300")
 
-        self.label = customtkinter.CTkLabel(self, text="ToplevelWindow")
-        self.label.pack(padx=20, pady=20)
+        self.label = customtkinter.CTkLabel(self, text="ERROR")
+        self.label.pack(padx=200, pady=200)
       
 class App(customtkinter.CTk):
     def __init__(self):
@@ -74,13 +73,7 @@ class App(customtkinter.CTk):
         self.textbox_display = customtkinter.CTkTextbox(self, width=300, height=700, corner_radius=20, border_width=2, border_color="gray50", font=self.display_font)
         self.textbox_display.grid(row=1, column=1, padx=10, pady=10, sticky="nsew", rowspan=10)
         self.textbox_display.insert("0.0", "CAN FUZZER INITIATING..................")
-        
-        # Create a font with bold style
-        #bold_font = tkFont.Font(self.label_textbox, self.label_textbox.cget("font"))
-        #bold_font.configure(weight="bold")
-
-        # Apply the bold font to the label
-        #self.label_textbox.configure(font=bold_font)
+        self.textbox_display.bind("<Key>", lambda e: "break")
         
         # Create a bold font
         bold_font = CTkFont(weight="bold")
@@ -89,7 +82,7 @@ class App(customtkinter.CTk):
         self.bitrate_var = tkinter.StringVar()
         self.label_textbox = customtkinter.CTkLabel(master=self.sidebar_frame, text="SELECT BITRATE", font=bold_font) 
         self.label_textbox.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-        self.combo_bitrate = customtkinter.CTkComboBox(master=self.sidebar_frame, width=200, height=40, variable=self.bitrate_var)
+        self.combo_bitrate = customtkinter.CTkComboBox(master=self.sidebar_frame, width=200, height=40, variable=self.bitrate_var, state='readonly')
         self.combo_bitrate.grid(row=1, column=0, pady=10, padx=10, sticky="n")
         CTkScrollableDropdown(self.combo_bitrate, values=[
                                                         "1000000",
@@ -116,14 +109,14 @@ class App(customtkinter.CTk):
         self.interface_var = customtkinter.StringVar()
         self.label_radio_group = customtkinter.CTkLabel(master=self.sidebar_frame, text="SELECT INTERFACE", font=bold_font)
         self.label_radio_group.grid(row=2, column=0, padx=10, pady=10)
-        self.combobox_interface = customtkinter.CTkComboBox(master=self.sidebar_frame, width=200, height=40, variable=self.interface_var, border_width=2)
+        self.combobox_interface = customtkinter.CTkComboBox(master=self.sidebar_frame, width=200, height=40, variable=self.interface_var, border_width=2, state='readonly')
         self.combobox_interface.grid(row=3, column=0, pady=10, padx=10)
         
         # # select attack based mechanism
         self.combobox_attack_var = customtkinter.StringVar()
         self.label_radio_group = customtkinter.CTkLabel(master=self.sidebar_frame, text="SELECT ATTACK MECHANISM", font=bold_font)
         self.label_radio_group.grid(row=4, column=0, columnspan=1, padx=10, pady=10, sticky="")
-        self.combobox_interface_attack_selection = customtkinter.CTkComboBox(master=self.sidebar_frame, width=200, height=40, command=self.combo_attack_selection, values=["CAN ID INJECTION ATTACKS","AUTOMATED CAN ID ATTACKS"], variable=self.combobox_attack_var)
+        self.combobox_interface_attack_selection = customtkinter.CTkComboBox(master=self.sidebar_frame, width=200, height=40, command=self.combo_attack_selection, values=["CAN ID INJECTION ATTACKS","AUTOMATED CAN ID ATTACKS"], variable=self.combobox_attack_var, state='readonly')
         self.combobox_interface_attack_selection.grid(row=5, column=0, pady=10, padx=10, sticky="n")
         
         
@@ -147,7 +140,7 @@ class App(customtkinter.CTk):
 
         self.label_can_device = customtkinter.CTkLabel(master=self.automatic_attack_frame, text="SELECT CAN ID", font=bold_font)
         self.label_can_device.grid(row=2, column=0, padx=10, pady=10)
-        self.combobox_device = customtkinter.CTkComboBox(master=self.automatic_attack_frame, width=240,variable=self.combobox_device_var)
+        self.combobox_device = customtkinter.CTkComboBox(master=self.automatic_attack_frame, width=240,variable=self.combobox_device_var, state='readonly')
         self.combobox_device.grid(row=3, column=0, pady=10, padx=10)
         CTkScrollableDropdown(self.combobox_device, values=self.hex_values)
         # self.combobox_device.pack(fill="x")
@@ -157,7 +150,7 @@ class App(customtkinter.CTk):
         self.label_radio_group.grid(row=4, column=0, columnspan=1, padx=10, pady=10, sticky="")
         self.combobox_method = customtkinter.CTkComboBox(master=self.automatic_attack_frame,
                                      values=["BRUTE FORCE ATTACK","RANDOM PACKET ATTACK"],
-                                     command=self.combobox_callback, variable=self.combobox_var, width=200)
+                                     command=self.combobox_callback, variable=self.combobox_var, width=200,state='readonly')
         # self.combobox_method.bind("<<ComboboxSelected>>", self.on_combo_select)
         self.combobox_method.grid(row=5, column=0, pady=10, padx=20)
 
@@ -166,7 +159,7 @@ class App(customtkinter.CTk):
         self.combobox_manual_attack_var = customtkinter.StringVar()
         self.label_manual_attack = customtkinter.CTkLabel(master=self.mannual_Attack_Frame, text="SELECT METHOD", font=bold_font)
         self.label_manual_attack.grid(row=4, column=0, columnspan=1, padx=10, pady=10, sticky="")
-        self.combobox_manual_attack = customtkinter.CTkComboBox(master=self.mannual_Attack_Frame, width=250, command=self.combobox_callback_manual, values=["TEMPLATE BASED ATTACK","DOS ATTACK","PGN ATTACK"], variable=self.combobox_manual_attack_var)
+        self.combobox_manual_attack = customtkinter.CTkComboBox(master=self.mannual_Attack_Frame, width=250, command=self.combobox_callback_manual, values=["TEMPLATE BASED ATTACK","DOS ATTACK","PGN ATTACK"], variable=self.combobox_manual_attack_var, state='readonly')
         self.combobox_manual_attack.grid(row=5, column=0, pady=10, padx=20, sticky="n")
 
         # create textframe
@@ -216,20 +209,26 @@ class App(customtkinter.CTk):
         row = self.bottom_button_frame.grid_size()[1]
 
         #create buttons
-        self.button_1 = customtkinter.CTkButton(master=self.bottom_button_frame, border_width=1, text="START FUZZING", command=self.start_fuzzers, width=200)
+        self.button_1 = customtkinter.CTkButton(master=self.bottom_button_frame, border_width=1, text="START FUZZING", font=bold_font, command=self.start_fuzzers, width=200)
         self.button_1.grid(row=row + 1, column=0, pady=10, padx=20)
-        self.button_2 = customtkinter.CTkButton(master=self.bottom_button_frame, border_width=2, text="STOP FUZZING", command=self.can_bus_shutdown, width=200)
+        self.button_2 = customtkinter.CTkButton(master=self.bottom_button_frame, border_width=2, text="STOP FUZZING", font=bold_font, command=self.can_bus_shutdown, width=200)
         self.button_2.grid(row=row + 2, column=0, pady=10, padx=20)
                                 
         
-        self.button_2.configure(state="disabled", text="STOP")
-        self.button_1.configure(state="disabled", text="START")
+        self.button_2.configure(state="disabled", text="STOP", font=bold_font)
+        self.button_1.configure(state="disabled", text="START", font=bold_font)
         
         # # # load interface based on platforms
         self.load_interface_based_on_platform()
         self.stop_event = threading.Event()
         self.automatic_attack_frame.grid_remove()
         self.mannual_Attack_Frame.grid_remove()      
+        
+    def ctrlEvent(event):
+        if(12==event.state and event.keysym == 'c'):
+            return
+        else:
+            return "break"   
 
     def stop_event_threading(self):
         self.stop_event.set()
@@ -460,8 +459,6 @@ class App(customtkinter.CTk):
                             self.textbox_display.insert("end", f"Sent CAN message: {can_id}, {data_decimal}\n")
                             self.textbox_display.see("end")  # Scroll to the end of the text widget
                     self.send_can_packets_from_file(can_interface_val, file_path) 
-                    
-        
                 else:
                     with open('CAN_ID_template.txt', 'w') as sniff_can_msg:
                         while time.time() < end_time:
@@ -572,7 +569,7 @@ class App(customtkinter.CTk):
             self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)
             self.button_2.configure(state="enabled", text="STOP FUZZING")
             #for virtual device uncomment this
-            # can_bus = VirtualBus(bustype='vsocketcan', channel='vcan0', bitrate=250000)
+            can_bus = VirtualBus(bustype='vsocketcan', channel='vcan0', bitrate=250000)
             # Create a list of 500 zeros to represent the initial message
             can_msg = [0] * 500
             n = self.textbox_packet.get("0.0", "end").strip()
@@ -664,26 +661,29 @@ class App(customtkinter.CTk):
 
     def sniff_can_messages(self):
         # Initialize a connection to the CAN bus (can0)
-
         can_interface_val = self.combobox_interface.get()
         bitrate_var = self.combo_bitrate.get()
         if can_interface_val == "":
             tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID INTERFACE")
         elif bitrate_var == "":
             tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID BITRATE")
-        else:   
-            self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)        
-            self.textbox_display.delete("1.0", customtkinter.END)
-            duration = self.input_var
-            end_time = time.time() + float(duration)
-            with open('CAN_ID.txt', 'a') as sniff_can_msg:
-                while time.time() < end_time:
-                    # Receive message
-                    received_msg = self.can_bus.recv()
-                    print("Received message:", received_msg)
-                    threading.Thread(target=self.add_line(received_msg)).start()
-                    sniff_can_msg.write("HEX Format: "+str(hex(received_msg.arbitration_id)) + " Integer Format: " +str(received_msg.arbitration_id)+ "\n")
-            self.sort_can_id()
+        else:
+            try:   
+                self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)        
+                self.textbox_display.delete("1.0", customtkinter.END)
+                duration = self.input_var
+                end_time = time.time() + float(duration)
+                with open('CAN_ID.txt', 'a') as sniff_can_msg:
+                    while time.time() < end_time:
+                        # Receive message
+                        received_msg = self.can_bus.recv()
+                        print("Received message:", received_msg)
+                        threading.Thread(target=self.add_line(received_msg)).start()
+                        sniff_can_msg.write("HEX Format: "+str(hex(received_msg.arbitration_id)) + " Integer Format: " +str(received_msg.arbitration_id)+ "\n")
+                self.sort_can_id()
+            except:
+                # self.open_toplevel()
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="SOMETHING WENT WRONG PLEASE TRY AGAIN")
     
     ####DOS BASED FUZZING BACKEND
     def send_can_message_dos(self, interface, can_id, data):
