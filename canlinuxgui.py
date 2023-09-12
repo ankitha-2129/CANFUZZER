@@ -404,7 +404,9 @@ class App(customtkinter.CTk):
                 # Convert the bytes data to decimal
                 data_decimal = int.from_bytes(data_bytes, byteorder='big', signed=False)
                 print("Sent CAN message:", can_id, data_decimal)
-                time.sleep(0.1)
+                self.textbox_display.insert("end",f"Sent CAN message:{can_id}, {data_decimal}\n")
+                self.textbox_display.see("end")
+                #time.sleep(0.1)
                 
 
     # Call the send_can_packets_from_file function with the provided file path and interface
@@ -452,12 +454,12 @@ class App(customtkinter.CTk):
                             threading.Thread(target=self.add_line(received_msg)).start()
                             sniff_can_msg.write(f"{received_can_id},{data}\n")
                             # Extract CAN ID and convert data to decimal
-                            can_id = received_can_id
-                            data_bytes = bytes.fromhex(data)
-                            data_decimal = int.from_bytes(data_bytes, byteorder='big', signed=False)
+                            #can_id = received_can_id
+                            #data_bytes = bytes.fromhex(data)
+                            #data_decimal = int.from_bytes(data_bytes, byteorder='big', signed=False)
                             # Display Sent CAN message in the GUI
-                            self.textbox_display.insert("end", f"Sent CAN message: {can_id}, {data_decimal}\n")
-                            self.textbox_display.see("end")  # Scroll to the end of the text widget
+                            #self.textbox_display.insert("end", f"Sent CAN message: {can_id}, {data_decimal}\n")
+                            #self.textbox_display.see("end")  # Scroll to the end of the text widget
                     self.send_can_packets_from_file(can_interface_val, file_path) 
                 else:
                     with open('CAN_ID_template.txt', 'w') as sniff_can_msg:
@@ -471,12 +473,12 @@ class App(customtkinter.CTk):
                             threading.Thread(target=self.add_line(received_msg)).start()
                             sniff_can_msg.write(f"{received_can_id},{data}\n")
                             # Extract CAN ID and convert data to decimal
-                            can_id = received_can_id
-                            data_bytes = bytes.fromhex(data)
-                            data_decimal = int.from_bytes(data_bytes, byteorder='big', signed=False)
+                            #can_id = received_can_id
+                            #data_bytes = bytes.fromhex(data)
+                            #data_decimal = int.from_bytes(data_bytes, byteorder='big', signed=False)
                             # Display Sent CAN message in the GUI
-                            self.textbox_display.insert("end", f"Sent CAN message: {can_id}, {data_decimal}\n")
-                            self.textbox_display.see("end")  # Scroll to the end of the text widget
+                            #self.textbox_display.insert("end", f"Sent CAN message: {can_id}, {data_decimal}\n")
+                            #self.textbox_display.see("end")  # Scroll to the end of the text widget
                     self.send_can_packets_from_file(can_interface_val, file_path) 
                     
                 self.can_bus.shutdown()
