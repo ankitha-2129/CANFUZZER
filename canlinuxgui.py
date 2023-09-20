@@ -10,6 +10,7 @@ import platform
 from CTkScrollableDropdown import *
 from can.interfaces.virtual import VirtualBus
 from customtkinter import CTkLabel,CTkFont
+from tkinter import ttk
 #from CTkMessagebox import CTkMessagebox
 
 
@@ -76,8 +77,8 @@ class App(customtkinter.CTk):
         self.textbox_display.bind("<Key>", lambda e: "break")
         
         # Create a bold font
-        bold_font = CTkFont(weight="bold")
-
+        bold_font = CTkFont(weight="bold",family="Helvetica", size=18)
+        
         # create text input Frame for bitrate and can interface 
         self.bitrate_var = tkinter.StringVar()
         self.label_textbox = customtkinter.CTkLabel(master=self.sidebar_frame, text="SELECT BITRATE", font=bold_font) 
@@ -116,8 +117,8 @@ class App(customtkinter.CTk):
         self.combobox_attack_var = customtkinter.StringVar()
         self.label_radio_group = customtkinter.CTkLabel(master=self.sidebar_frame, text="SELECT ATTACK MECHANISM", font=bold_font)
         self.label_radio_group.grid(row=4, column=0, columnspan=1, padx=10, pady=10, sticky="")
-        self.combobox_interface_attack_selection = customtkinter.CTkComboBox(master=self.sidebar_frame, width=200, height=40, command=self.combo_attack_selection, values=["CAN ID INJECTION ATTACKS","AUTOMATED CAN ID ATTACKS"], variable=self.combobox_attack_var, state='readonly')
-        self.combobox_interface_attack_selection.grid(row=5, column=0, pady=10, padx=10, sticky="n")
+        self.combobox_interface_attack_selection = customtkinter.CTkComboBox(master=self.sidebar_frame, width=250, height=40, command=self.combo_attack_selection, values=["CAN ID INJECTION ATTACKS","AUTOMATED CAN ID ATTACKS"], variable=self.combobox_attack_var, state='readonly')
+        self.combobox_interface_attack_selection.grid(row=5, column=0, pady=15, padx=15, sticky="n")
         
         
         # # create two new frames for two different attacks 
@@ -135,12 +136,12 @@ class App(customtkinter.CTk):
         # # SCAN Can Device 
         self.hex_values = []
         self.combobox_device_var = customtkinter.StringVar()
-        self.button_1 = customtkinter.CTkButton(master=self.automatic_attack_frame, border_width=1, text="SCAN CAN DEVICE ID's", font=bold_font, command=self.open_input_dialog_event)
-        self.button_1.grid(row=1, column=0, pady=5, padx=10)
+        self.button_1 = customtkinter.CTkButton(master=self.automatic_attack_frame, border_width=1, text="SCAN CAN DEVICE ID's", font=bold_font, command=self.open_input_dialog_event, width=250, height=40)
+        self.button_1.grid(row=1, column=0, pady=20, padx=20)
 
         self.label_can_device = customtkinter.CTkLabel(master=self.automatic_attack_frame, text="SELECT CAN ID", font=bold_font)
         self.label_can_device.grid(row=2, column=0, padx=10, pady=10)
-        self.combobox_device = customtkinter.CTkComboBox(master=self.automatic_attack_frame, width=240,variable=self.combobox_device_var, state='readonly')
+        self.combobox_device = customtkinter.CTkComboBox(master=self.automatic_attack_frame, width=150,variable=self.combobox_device_var, state='readonly')
         self.combobox_device.grid(row=3, column=0, pady=10, padx=10)
         CTkScrollableDropdown(self.combobox_device, values=self.hex_values)
         # self.combobox_device.pack(fill="x")
@@ -159,7 +160,7 @@ class App(customtkinter.CTk):
         self.combobox_manual_attack_var = customtkinter.StringVar()
         self.label_manual_attack = customtkinter.CTkLabel(master=self.mannual_Attack_Frame, text="SELECT METHOD", font=bold_font)
         self.label_manual_attack.grid(row=4, column=0, columnspan=1, padx=10, pady=10, sticky="")
-        self.combobox_manual_attack = customtkinter.CTkComboBox(master=self.mannual_Attack_Frame, width=250, command=self.combobox_callback_manual, values=["TEMPLATE BASED ATTACK","DOS ATTACK","PGN ATTACK"], variable=self.combobox_manual_attack_var, state='readonly')
+        self.combobox_manual_attack = customtkinter.CTkComboBox(master=self.mannual_Attack_Frame, width=200, command=self.combobox_callback_manual, values=["TEMPLATE BASED ATTACK","DOS ATTACK","PGN ATTACK"], variable=self.combobox_manual_attack_var, state='readonly')
         self.combobox_manual_attack.grid(row=5, column=0, pady=10, padx=20, sticky="n")
 
         # create textframe
