@@ -110,7 +110,7 @@ class App(customtkinter.CTk):
         self.interface_var = customtkinter.StringVar()
         self.label_radio_group = customtkinter.CTkLabel(master=self.sidebar_frame, text="SELECT INTERFACE", font=bold_font)
         self.label_radio_group.grid(row=2, column=0, padx=10, pady=10)
-        self.combobox_interface = customtkinter.CTkComboBox(master=self.sidebar_frame, width=200, height=40, variable=self.interface_var, border_width=2, state='readonly')
+        self.combobox_interface = customtkinter.CTkComboBox(master=self.sidebar_frame, width=150, height=40, variable=self.interface_var, border_width=2, state='readonly')
         self.combobox_interface.grid(row=3, column=0, pady=10, padx=10)
         
         # # select attack based mechanism
@@ -140,18 +140,18 @@ class App(customtkinter.CTk):
         self.button_1.grid(row=1, column=0, pady=20, padx=20)
 
         self.label_can_device = customtkinter.CTkLabel(master=self.automatic_attack_frame, text="SELECT CAN ID", font=bold_font)
-        self.label_can_device.grid(row=2, column=0, padx=10, pady=10)
-        self.combobox_device = customtkinter.CTkComboBox(master=self.automatic_attack_frame, width=150,variable=self.combobox_device_var, state='readonly')
+        self.label_can_device.grid(row=2, column=0, padx=15, pady=15)
+        self.combobox_device = customtkinter.CTkComboBox(master=self.automatic_attack_frame, width=200,height=40, variable=self.combobox_device_var, state='readonly')
         self.combobox_device.grid(row=3, column=0, pady=10, padx=10)
         CTkScrollableDropdown(self.combobox_device, values=self.hex_values)
         # self.combobox_device.pack(fill="x")
 
         self.combobox_var = customtkinter.StringVar()
         self.label_radio_group = customtkinter.CTkLabel(master=self.automatic_attack_frame, text="SELECT METHOD", font=bold_font)
-        self.label_radio_group.grid(row=4, column=0, columnspan=1, padx=10, pady=10, sticky="")
+        self.label_radio_group.grid(row=4, column=0, columnspan=1, padx=15, pady=15, sticky="")
         self.combobox_method = customtkinter.CTkComboBox(master=self.automatic_attack_frame,
                                      values=["BRUTE FORCE ATTACK","RANDOM PACKET ATTACK"],
-                                     command=self.combobox_callback, variable=self.combobox_var, width=200,state='readonly')
+                                     command=self.combobox_callback, variable=self.combobox_var, width=200, height=40, state='readonly')
         # self.combobox_method.bind("<<ComboboxSelected>>", self.on_combo_select)
         self.combobox_method.grid(row=5, column=0, pady=10, padx=20)
 
@@ -159,8 +159,8 @@ class App(customtkinter.CTk):
         
         self.combobox_manual_attack_var = customtkinter.StringVar()
         self.label_manual_attack = customtkinter.CTkLabel(master=self.mannual_Attack_Frame, text="SELECT METHOD", font=bold_font)
-        self.label_manual_attack.grid(row=4, column=0, columnspan=1, padx=10, pady=10, sticky="")
-        self.combobox_manual_attack = customtkinter.CTkComboBox(master=self.mannual_Attack_Frame, width=200, command=self.combobox_callback_manual, values=["TEMPLATE BASED ATTACK","DOS ATTACK","PGN ATTACK"], variable=self.combobox_manual_attack_var, state='readonly')
+        self.label_manual_attack.grid(row=4, column=0, columnspan=1, padx=15, pady=15, sticky="")
+        self.combobox_manual_attack = customtkinter.CTkComboBox(master=self.mannual_Attack_Frame, width=200, height=40, command=self.combobox_callback_manual, values=["TEMPLATE BASED ATTACK","DOS ATTACK","PGN ATTACK"], variable=self.combobox_manual_attack_var, state='readonly')
         self.combobox_manual_attack.grid(row=5, column=0, pady=10, padx=20, sticky="n")
 
         # create textframe
@@ -176,27 +176,27 @@ class App(customtkinter.CTk):
     
         self.label_textbox_packet = customtkinter.CTkLabel(master=self.all_input_frame, text="ENTER THE NUMBER OF PACKETS", font=bold_font)
         self.label_textbox_packet.grid(row=1, column=0, padx=10, pady=10, sticky="n")
-        self.textbox_packet = customtkinter.CTkTextbox(self.all_input_frame, width=200, height=20,border_width=2)
+        self.textbox_packet = customtkinter.CTkTextbox(self.all_input_frame, width=100, height=20, border_width=2)
         self.textbox_packet.grid(row=2, column=0, padx=10, pady=10, sticky="n")
 
         self.label_textbox_seconds = customtkinter.CTkLabel(master=self.all_input_frame, text="ENTER THE NUMBER OF SECONDS", font=bold_font)
         self.label_textbox_seconds.grid(row=3, column=0, padx=10, pady=10, sticky="n")  
-        self.textbox_packet_2 = customtkinter.CTkTextbox(self.all_input_frame, width=200, height=20,border_width=2)
+        self.textbox_packet_2 = customtkinter.CTkTextbox(self.all_input_frame, width=100, height=20,border_width=2)
         self.textbox_packet_2.grid(row=4, column=0, padx=10, pady=10, sticky="n")     
 
         self.label_textbox = customtkinter.CTkLabel(master=self.all_input_frame, text="ENTER 00 or FF", font=bold_font)
         self.label_textbox.grid(row=5, column=0, padx=10, pady=10, sticky="n")
-        self.textbox_packet_hexa = customtkinter.CTkTextbox(self.all_input_frame, width=200, height=20,border_width=2)
+        self.textbox_packet_hexa = customtkinter.CTkTextbox(self.all_input_frame, width=100, height=20,border_width=2)
         self.textbox_packet_hexa.grid(row=6, column=0, padx=10, pady=10, sticky="n")
         
         self.label_first_bit = customtkinter.CTkLabel(master=self.all_input_frame, text="ENTER 0 or 1", font=bold_font)
         self.label_first_bit.grid(row=7, column=0, padx=10, pady=10, sticky="n")
-        self.textbox_packet_first_bit = customtkinter.CTkTextbox(self.all_input_frame, width=200, height=20,border_width=2)
+        self.textbox_packet_first_bit = customtkinter.CTkTextbox(self.all_input_frame, width=100, height=20,border_width=2)
         self.textbox_packet_first_bit.grid(row=8, column=0, padx=10, pady=10, sticky="n")
         
         self.label_can_id = customtkinter.CTkLabel(master=self.all_input_frame, text="ENTER LAST TWO DIGITS OF THE CAN ID", font=bold_font)
         self.label_can_id.grid(row=9, column=0, padx=10, pady=10, sticky="n")
-        self.textbox_packet_first_can_id = customtkinter.CTkTextbox(self.all_input_frame, width=200, height=20,border_width=2)
+        self.textbox_packet_first_can_id = customtkinter.CTkTextbox(self.all_input_frame, width=100, height=20,border_width=2)
         self.textbox_packet_first_can_id.grid(row=10, column=0, padx=10, pady=10, sticky="n")
         
 
@@ -211,9 +211,9 @@ class App(customtkinter.CTk):
 
         #create buttons
         self.button_1 = customtkinter.CTkButton(master=self.bottom_button_frame, border_width=1, text="START FUZZING", font=bold_font, command=self.start_fuzzers, width=200)
-        self.button_1.grid(row=row + 1, column=0, pady=10, padx=20)
+        self.button_1.grid(row=row + 1, column=0, pady=20, padx=20)
         self.button_2 = customtkinter.CTkButton(master=self.bottom_button_frame, border_width=2, text="STOP FUZZING", font=bold_font, command=self.can_bus_shutdown, width=200)
-        self.button_2.grid(row=row + 2, column=0, pady=10, padx=20)
+        self.button_2.grid(row=row + 2, column=0, pady=20, padx=20)
                                 
         
         self.button_2.configure(state="disabled", text="STOP", font=bold_font)
