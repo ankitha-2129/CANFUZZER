@@ -160,7 +160,7 @@ class App(customtkinter.CTk):
         self.combobox_manual_attack_var = customtkinter.StringVar()
         self.label_manual_attack = customtkinter.CTkLabel(master=self.mannual_Attack_Frame, text="SELECT METHOD", font=bold_font)
         self.label_manual_attack.grid(row=4, column=0, columnspan=1, padx=15, pady=15, sticky="")
-        self.combobox_manual_attack = customtkinter.CTkComboBox(master=self.mannual_Attack_Frame, width=200, height=40, command=self.combobox_callback_manual, values=["TEMPLATE BASED ATTACK","DOS ATTACK","PGN ATTACK"], variable=self.combobox_manual_attack_var, state='readonly')
+        self.combobox_manual_attack = customtkinter.CTkComboBox(master=self.mannual_Attack_Frame, width=230, height=40, command=self.combobox_callback_manual, values=["TEMPLATE BASED ATTACK","DOS ATTACK","PGN ATTACK"], variable=self.combobox_manual_attack_var, state='readonly')
         self.combobox_manual_attack.grid(row=5, column=0, pady=10, padx=20, sticky="n")
 
         # create textframe
@@ -794,7 +794,10 @@ class App(customtkinter.CTk):
             last_hex_digits = self.textbox_packet_first_can_id.get("0.0", "end").strip()
 
             # Validation check for first_bit
-            if first_bit not in ["0", "1"]:
+            if first_bit == "":
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="first_bit MUST BE EITHER 0 or 1")
+                self.textbox_packet_first_bit.configure(border_color="red")
+            elif first_bit not in ["0", "1"]:
                 tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="first_bit MUST BE EITHER 0 or 1")
                 self.textbox_packet_first_bit.configure(border_color="red")
             elif last_hex_digits == "":
