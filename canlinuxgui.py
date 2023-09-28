@@ -251,7 +251,7 @@ class App(customtkinter.CTk):
         if os_name == "Windows":
             self.combobox_interface.configure(values=["PCAN_USBBUS1"])
         elif os_name == "Linux":
-            CTkScrollableDropdown(self.combobox_interface, values=["can0","can1"])
+            CTkScrollableDropdown(self.combobox_interface, values=["can0","can1"], state='readonly')
             # self.combobox_interface.configure(values=["can0","can1"])
         elif os_name == "Darwin":
             self.combobox_interface.configure(values=[])
