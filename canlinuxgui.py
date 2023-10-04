@@ -529,14 +529,14 @@ class App(customtkinter.CTk):
             can_id = int(can_device_id, 16)
 
             self.fuzzing = True  # Start the fuzzing process
-            for one in range(2):
-                for two in range(2):
-                    for three in range(2):
-                        for four in range(2):
-                            for five in range(2):
-                                for six in range(2):
-                                    for seven in range(2):
-                                        for eight in range(2):
+            for one in range(255):
+                for two in range(255):
+                    for three in range(255):
+                        for four in range(255):
+                            for five in range(255):
+                                for six in range(255):
+                                    for seven in range(255):
+                                        for eight in range(255):
                                             packet = [can_msg[one] + one, can_msg[two] + two, can_msg[three] + three, can_msg[four] + four, can_msg[five] + five, can_msg[six] + six, can_msg[seven] + seven, can_msg[eight] + eight]
                                             packet_str = ', '.join(map(str, packet))
                                             print(f"{can_id}    [8]  {packet_str}\n")  # Update the log text in the required format
