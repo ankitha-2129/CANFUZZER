@@ -443,7 +443,7 @@ class App(customtkinter.CTk):
             else:
                 self.textbox_packet_2.configure(border_color="gray50")
                 end_time = time.time() + float(duration)
-                if duration == "0":
+                """if duration == "0":
                     with open('CAN_ID_template.txt', 'w') as sniff_can_msg:
                         while True:
                             # Receive message
@@ -462,17 +462,17 @@ class App(customtkinter.CTk):
                             #self.textbox_display.insert("end", f"Sent CAN message: {can_id}, {data_decimal}\n")
                             #self.textbox_display.see("end")  # Scroll to the end of the text widget
                     self.send_can_packets_from_file(can_interface_val, file_path) 
-                else:
-                    with open('CAN_ID_template.txt', 'w') as sniff_can_msg:
-                        while time.time() < end_time:
-                            # Receive message
-                            received_msg = self.can_bus.recv()
-                            received_can_id = received_msg.arbitration_id
-                            data = received_msg.data.hex()
-                            print("Received message:", received_msg)
-                            formatted_msg = f"Received message: {received_msg}"
-                            threading.Thread(target=self.add_line(received_msg)).start()
-                            sniff_can_msg.write(f"{received_can_id},{data}\n")
+                else:"""
+                with open('CAN_ID_template.txt', 'w') as sniff_can_msg:
+                    while time.time() < end_time:
+                        # Receive message
+                        received_msg = self.can_bus.recv()
+                        received_can_id = received_msg.arbitration_id
+                        data = received_msg.data.hex()
+                        print("Received message:", received_msg)
+                        formatted_msg = f"Received message: {received_msg}"
+                        threading.Thread(target=self.add_line(received_msg)).start()
+                        sniff_can_msg.write(f"{received_can_id},{data}\n")
                             # Extract CAN ID and convert data to decimal
                             #can_id = received_can_id
                             #data_bytes = bytes.fromhex(data)
@@ -480,7 +480,7 @@ class App(customtkinter.CTk):
                             # Display Sent CAN message in the GUI
                             #self.textbox_display.insert("end", f"Sent CAN message: {can_id}, {data_decimal}\n")
                             #self.textbox_display.see("end")  # Scroll to the end of the text widget
-                    self.send_can_packets_from_file(can_interface_val, file_path) 
+                self.send_can_packets_from_file(can_interface_val, file_path) 
                     
                 self.can_bus.shutdown()
         
@@ -760,7 +760,13 @@ class App(customtkinter.CTk):
                     # Receive message
                     received_msg = self.can_bus.recv()
                     received_can_id = received_msg.arbitration_id
-                    data = data_flood
+                    #data = data_flood
+                    if data_flood == "00":
+                        formatted_data = "00000000"
+                    elif data_flood == "FF":
+                        formatted_data = "FFFFFFFF"
+                    else:
+                         formatted_data = data_flood * 8
                     print("Received message:", received_msg)
                     formatted_msg = f"Received message: {received_msg}"
                     threading.Thread(target=self.add_line(received_msg)).start()
