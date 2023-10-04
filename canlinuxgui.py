@@ -572,7 +572,7 @@ class App(customtkinter.CTk):
             self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)
             self.button_2.configure(state="enabled", text="STOP FUZZING")
             #for virtual device uncomment this
-            can_bus = VirtualBus(bustype='vsocketcan', channel='vcan0', bitrate=250000)
+            #can_bus = VirtualBus(bustype='vsocketcan', channel='vcan0', bitrate=250000)
             # Create a list of 500 zeros to represent the initial message
             can_msg = [0] * 500
             n = self.textbox_packet.get("0.0", "end").strip()
