@@ -770,7 +770,7 @@ class App(customtkinter.CTk):
                     print("Received message:", received_msg)
                     formatted_msg = f"Received message: {received_msg}"
                     threading.Thread(target=self.add_line(received_msg)).start()
-                    sniff_can_msg.write(f"{received_can_id},{data}\n")
+                    sniff_can_msg.write(f"{received_can_id},{formatted_data}\n")
             self.send_can_packets_from_file_dos(can_interface_val, file_path)
             
             
