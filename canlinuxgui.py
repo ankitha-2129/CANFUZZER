@@ -7,6 +7,8 @@ import random
 import threading
 import re
 import platform
+import subprocess
+#import tkinter as tk
 from CTkScrollableDropdown import *
 from can.interfaces.virtual import VirtualBus
 from customtkinter import CTkLabel,CTkFont
@@ -57,7 +59,7 @@ class App(customtkinter.CTk):
         
         # create sidebar frame with widgets
         
-        self.sidebar_frame = customtkinter.CTkScrollableFrame(self, width=400, corner_radius=20)
+        self.sidebar_frame = customtkinter.CTkScrollableFrame(self, width=500, corner_radius=20)
         self.sidebar_frame.grid(row=0, column=0, rowspan=3, sticky="nsew", columnspan=1)
         self.sidebar_frame.grid_columnconfigure(0, weight=1)
         self.sidebar_frame.rowconfigure(1, weight=1)
@@ -78,6 +80,7 @@ class App(customtkinter.CTk):
         
         # Create a bold font
         bold_font = CTkFont(weight="bold",family="Helvetica", size=18)
+        
         
         # create text input Frame for bitrate and can interface 
         self.bitrate_var = tkinter.StringVar()
@@ -106,6 +109,8 @@ class App(customtkinter.CTk):
         #label_style = ttk.Style()
         #label_style.configure("LabelStyle.TLabel", font=("Arial", 16, "bold"))
         
+        # two buttons or one button is enough i guess to start and stop can service via system commands 
+        
         # combobox for can interface
         self.interface_var = customtkinter.StringVar()
         self.label_radio_group = customtkinter.CTkLabel(master=self.sidebar_frame, text="SELECT INTERFACE", font=bold_font)
@@ -113,23 +118,29 @@ class App(customtkinter.CTk):
         self.combobox_interface = customtkinter.CTkComboBox(master=self.sidebar_frame, width=150, height=40, variable=self.interface_var, border_width=2, state='readonly')
         self.combobox_interface.grid(row=3, column=0, pady=10, padx=10)
         
+        #create buttons
+        self.start_can_button = customtkinter.CTkButton(master=self.sidebar_frame, border_width=1, text="CAN UP", command=self.start_and_stop_can_ip, font=bold_font, width=200)
+        self.start_can_button.grid(row=4, column=0, pady=20, padx=20)
+        # self.stop_can_button = customtkinter.CTkButton(master=self.sidebar_frame, border_width=2, text="Stop Can Ip", command=self.stop_can_ip, font=bold_font, width=100)
+        # self.stop_can_button.grid(row=4, column=0)
+        
         # # select attack based mechanism
         self.combobox_attack_var = customtkinter.StringVar()
         self.label_radio_group = customtkinter.CTkLabel(master=self.sidebar_frame, text="SELECT ATTACK MECHANISM", font=bold_font)
-        self.label_radio_group.grid(row=4, column=0, columnspan=1, padx=10, pady=10, sticky="")
+        self.label_radio_group.grid(row=5, column=0, columnspan=1, padx=10, pady=10, sticky="")
         self.combobox_interface_attack_selection = customtkinter.CTkComboBox(master=self.sidebar_frame, width=250, height=40, command=self.combo_attack_selection, values=["CAN ID INJECTION ATTACKS","AUTOMATED CAN ID ATTACKS"], variable=self.combobox_attack_var, state='readonly')
-        self.combobox_interface_attack_selection.grid(row=5, column=0, pady=15, padx=15, sticky="n")
+        self.combobox_interface_attack_selection.grid(row=6, column=0, pady=15, padx=15, sticky="n")
         
         
         # # create two new frames for two different attacks 
         self.mannual_Attack_Frame = customtkinter.CTkFrame(self.sidebar_frame, width=500, corner_radius=0)
-        self.mannual_Attack_Frame.grid(row=6, column=0, padx=10, pady=10, sticky="nsew")
+        self.mannual_Attack_Frame.grid(row=7, column=0, padx=10, pady=10, sticky="nsew")
         self.mannual_Attack_Frame.grid_columnconfigure(0, weight=1)
         self.mannual_Attack_Frame.grid_rowconfigure(0, weight=1)
         
         # # frame 2 for automactic attacks
         self.automatic_attack_frame = customtkinter.CTkFrame(self.sidebar_frame, width=500, corner_radius=0)
-        self.automatic_attack_frame.grid(row=7, column=0, padx=10, pady=10, sticky="nsew")
+        self.automatic_attack_frame.grid(row=8, column=0, padx=10, pady=10, sticky="nsew")
         self.automatic_attack_frame.grid_columnconfigure(0, weight=1)
         self.automatic_attack_frame.grid_rowconfigure(0, weight=1)
         
@@ -165,7 +176,7 @@ class App(customtkinter.CTk):
 
         # create textframe
         self.all_input_frame = customtkinter.CTkFrame(self.sidebar_frame, corner_radius=0)
-        self.all_input_frame.grid(row=8, column=0, padx=10, pady=10, sticky="nsew")
+        self.all_input_frame.grid(row=9, column=0, padx=10, pady=10, sticky="nsew")
         self.all_input_frame.grid_columnconfigure(0, weight=1)
         self.all_input_frame.grid_rowconfigure(0, weight=1)
 
@@ -223,8 +234,9 @@ class App(customtkinter.CTk):
         self.load_interface_based_on_platform()
         self.stop_event = threading.Event()
         self.automatic_attack_frame.grid_remove()
-        self.mannual_Attack_Frame.grid_remove()      
+        self.mannual_Attack_Frame.grid_remove()   
         
+       
     def ctrlEvent(event):
         if(12==event.state and event.keysym == 'c'):
             return
@@ -421,70 +433,91 @@ class App(customtkinter.CTk):
         can_interface_val = self.combobox_interface.get()
         seconds = self.textbox_packet_2.get("0.0", "end").strip()
         bitrate_var = self.combo_bitrate.get()
-        if can_interface_val == "":
-            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID INTERFACE")
-        elif bitrate_var == "":
-            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID BITRATE")
-        elif seconds == "":
-            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
-            self.textbox_packet_2.configure(border_color="red")
-        else:    
-            self.textbox_packet_2.configure(border_color="gray50")
-            self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)
-            self.button_2.configure(state="enabled", text="STOP FUZZING")
-            duration = seconds
-            can_device_id = self.combobox_device_var.get()
-            # selected_can_id_decimal = int(can_device_id, 16)
-            if not duration:
+        try:
+            if can_interface_val == "":
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID INTERFACE")
+            elif bitrate_var == "":
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID BITRATE")
+            elif seconds == "":
                 tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
-            elif not duration.isdigit():
                 self.textbox_packet_2.configure(border_color="red")
-                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
-            else:
+            else:    
                 self.textbox_packet_2.configure(border_color="gray50")
-                end_time = time.time() + float(duration)
-                """if duration == "0":
+                self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)
+                self.button_2.configure(state="enabled", text="STOP FUZZING")
+                duration = seconds
+                can_device_id = self.combobox_device_var.get()
+                # selected_can_id_decimal = int(can_device_id, 16)
+                if not duration:
+                    tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
+                elif not duration.isdigit():
+                    self.textbox_packet_2.configure(border_color="red")
+                    tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DURATION")
+                else:
+                    self.textbox_packet_2.configure(border_color="gray50")
+                    end_time = time.time() + float(duration)
+                
                     with open('CAN_ID_template.txt', 'w') as sniff_can_msg:
-                        while True:
-                            # Receive message
-                            received_msg = self.can_bus.recv()
-                            received_can_id = received_msg.arbitration_id
-                            data = received_msg.data.hex()
-                            print("Received message:", received_msg)
-                            formatted_msg = f"Received message: {received_msg}"
-                            threading.Thread(target=self.add_line(received_msg)).start()
-                            sniff_can_msg.write(f"{received_can_id},{data}\n")
-                            # Extract CAN ID and convert data to decimal
-                            #can_id = received_can_id
-                            #data_bytes = bytes.fromhex(data)
-                            #data_decimal = int.from_bytes(data_bytes, byteorder='big', signed=False)
-                            # Display Sent CAN message in the GUI
-                            #self.textbox_display.insert("end", f"Sent CAN message: {can_id}, {data_decimal}\n")
-                            #self.textbox_display.see("end")  # Scroll to the end of the text widget
+                        while time.time() < end_time:
+                            try:
+                                # Receive message
+                                received_msg = self.can_bus.recv()
+                                received_can_id = received_msg.arbitration_id
+                                data = received_msg.data.hex()
+                                print("Received message:", received_msg)
+                                formatted_msg = f"Received message: {received_msg}"
+                                threading.Thread(target=self.add_line(received_msg)).start()
+                                sniff_can_msg.write(f"{received_can_id},{data}\n")
+	                            # Extract CAN ID and convert data to decimal
+	                            #can_id = received_can_id
+	                            #data_bytes = bytes.fromhex(data)
+	                            #data_decimal = int.from_bytes(data_bytes, byteorder='big', signed=False)
+	                            # Display Sent CAN message in the GUI
+	                            #self.textbox_display.insert("end", f"Sent CAN message: {can_id}, {data_decimal}\n")
+	                            #self.textbox_display.see("end")  # Scroll to the end of the text widget
+                            except Exception as e:
+                                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message=str(e))
+                                break
                     self.send_can_packets_from_file(can_interface_val, file_path) 
-                else:"""
-                with open('CAN_ID_template.txt', 'w') as sniff_can_msg:
-                    while time.time() < end_time:
-                        # Receive message
-                        received_msg = self.can_bus.recv()
-                        received_can_id = received_msg.arbitration_id
-                        data = received_msg.data.hex()
-                        print("Received message:", received_msg)
-                        formatted_msg = f"Received message: {received_msg}"
-                        threading.Thread(target=self.add_line(received_msg)).start()
-                        sniff_can_msg.write(f"{received_can_id},{data}\n")
-                            # Extract CAN ID and convert data to decimal
-                            #can_id = received_can_id
-                            #data_bytes = bytes.fromhex(data)
-                            #data_decimal = int.from_bytes(data_bytes, byteorder='big', signed=False)
-                            # Display Sent CAN message in the GUI
-                            #self.textbox_display.insert("end", f"Sent CAN message: {can_id}, {data_decimal}\n")
-                            #self.textbox_display.see("end")  # Scroll to the end of the text widget
-                self.send_can_packets_from_file(can_interface_val, file_path) 
-                    
-                self.can_bus.shutdown()
+                    self.can_bus.shutdown()
+        except Exception as e:
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message=str(e))
         
+    def start_and_stop_can_ip(self):
+        #subprocess.run(['sudo', 'ip', 'link', 'set', 'can0', 'down'])
+        bitrate_var = self.combo_bitrate.get()
+        can_interface_val = self.combobox_interface.get()
+        text = self.start_can_button.cget("text")
+        if can_interface_val == "":
+            tkinter.messagebox.showinfo(title="ERROR", message="PLEASE SELECT VALID INTERFACE")
+            return
+        elif bitrate_var == "":
+            tkinter.messagebox.showinfo(title="ERROR", message="PLEASE SELECT VALID BITRATE")
+            return
+        try:
+            if text == "CAN UP":
+                command = f"sudo ip link set {can_interface_val} down && sudo ip link set {can_interface_val} up type can bitrate {bitrate_var}"
+                subprocess.run(command, shell=True, check=True)
+                tkinter.messagebox.showinfo(title="Success", message="{can_interface_val} up and Running")
+                self.start_can_button.configure(text="CAN DOWN")
+            elif text == "CAN DOWN":
+                command = f"sudo ip link set {can_interface_val} down"
+                subprocess.run(command, shell=True, check=True)
+                tkinter.messagebox.showinfo(title="Success", message="{can_interface_val} Shutdown")
+                self.start_can_button.configure(text="CAN UP")
+        except Exception as e:
+            tkinter.messagebox.showinfo(title="ERROR", message=str(e))
 
+    # def stop_can_ip(self):
+    #     #subprocess.run(['sudo', 'ip', 'link', 'set', 'can0', 'down'])
+    #     can_interface_val = self.combobox_interface.get()
+    #     try:
+    #         command = f"sudo ip link set {can_interface_val} down"
+    #         subprocess.run(command, shell=True, check=True)
+    #         tkinter.messagebox.showinfo(title="Success", message="{can_interface_val} Shutdown")
+    #     except Exception as e:
+    #         tkinter.messagebox.showinfo(title="ERROR", message=str(e))
+        
     def start_fuzzers(self):
         # self.button_2.configure(state="enabled", text="Disabled Stop")
         if self.combobox_var.get() == "BRUTE FORCE ATTACK":
@@ -512,47 +545,50 @@ class App(customtkinter.CTk):
         self.button_2.configure(state="enabled", text="STOP FUZZING")
         can_interface_val = self.combobox_interface.get()
         bitrate_var = self.combo_bitrate.get()
-        if can_interface_val == "":
-            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID INTERFACE")
-        elif bitrate_var == "":
-            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID BITRATE")
-        else:
-            self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)
-            self.button_2.configure(state="enabled", text="STOP FUZZING")
+        try:
+            if can_interface_val == "":
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID INTERFACE")
+            elif bitrate_var == "":
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID BITRATE")
+            else:
+                self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)
+                self.button_2.configure(state="enabled", text="STOP FUZZING")
 
-            #for virtual device uncomment this
-            # self.can_bus = VirtualBus(bustype='vsocketcan', channel='vcan0', bitrate=bitrate_var)
+                #for virtual device uncomment this
+                # self.can_bus = VirtualBus(bustype='vsocketcan', channel='vcan0', bitrate=bitrate_var)
 
-            # Create a list of 500 zeros to represent the initial message
-            can_msg = [0] * 500
-            can_device_id = self.combobox_device_var.get()
-            can_id = int(can_device_id, 16)
+                # Create a list of 500 zeros to represent the initial message
+                can_msg = [0] * 500
+                can_device_id = self.combobox_device_var.get()
+                can_id = int(can_device_id, 16)
 
-            self.fuzzing = True  # Start the fuzzing process
-            for one in range(255):
-                for two in range(255):
-                    for three in range(255):
-                        for four in range(255):
-                            for five in range(255):
-                                for six in range(255):
-                                    for seven in range(255):
-                                        for eight in range(255):
-                                            packet = [can_msg[one] + one, can_msg[two] + two, can_msg[three] + three, can_msg[four] + four, can_msg[five] + five, can_msg[six] + six, can_msg[seven] + seven, can_msg[eight] + eight]
-                                            packet_str = ', '.join(map(str, packet))
-                                            print(f"{can_id}    [8]  {packet_str}\n")  # Update the log text in the required format
-                                            msg = can.Message(arbitration_id=can_id, data=packet, is_extended_id=False)
-                                            threading.Thread(target=self.add_line(msg)).start()
-                                            self.can_bus.send(msg)
-                                            time.sleep(0.1)  # Delay between packets
-                                        can_msg[eight] = 0
-                                    can_msg[seven] = 0
-                                can_msg[six] = 0
-                            can_msg[five] = 0
-                        can_msg[four] = 0
-                    can_msg[three] = 0
-                can_msg[two] = 0
-            self.can_bus.flush_tx_buffer()
-            self.can_bus.shutdown()
+                self.fuzzing = True  # Start the fuzzing process
+                for one in range(255):
+                    for two in range(255):
+                        for three in range(255):
+                            for four in range(255):
+                                for five in range(255):
+                                    for six in range(255):
+                                        for seven in range(255):
+                                            for eight in range(255):
+                                                packet = [can_msg[one] + one, can_msg[two] + two, can_msg[three] + three, can_msg[four] + four, can_msg[five] + five, can_msg[six] + six, can_msg[seven] + seven, can_msg[eight] + eight]
+                                                packet_str = ', '.join(map(str, packet))
+                                                print(f"{can_id}    [8]  {packet_str}\n")  # Update the log text in the required format
+                                                msg = can.Message(arbitration_id=can_id, data=packet, is_extended_id=False)
+                                                threading.Thread(target=self.add_line(msg)).start()
+                                                self.can_bus.send(msg)
+                                                time.sleep(0.1)  # Delay between packets
+                                            can_msg[eight] = 0
+                                        can_msg[seven] = 0
+                                    can_msg[six] = 0
+                                can_msg[five] = 0
+                            can_msg[four] = 0
+                        can_msg[three] = 0
+                    can_msg[two] = 0
+                self.can_bus.flush_tx_buffer()
+                self.can_bus.shutdown()
+        except Exception as e:
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message=str(e))
             
     #### RANDOM METHOD
     def random_packet_attack(self):
@@ -560,48 +596,57 @@ class App(customtkinter.CTk):
         can_interface_val = self.combobox_interface.get()
         bitrate_var = self.combo_bitrate.get()
         packets = self.textbox_packet.get("0.0", "end").strip()
-        if can_interface_val == "":
-            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID INTERFACE")
-        elif bitrate_var == "":
-            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID BITRATE")
-        elif packets == "":
-            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID NUMBER OF PACKETS")
-            self.textbox_packet.configure(border_color="red")
-        else:  
-            self.textbox_packet.configure(border_color="gray50")
-            self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)
-            self.button_2.configure(state="enabled", text="STOP FUZZING")
-            #for virtual device uncomment this
-            #can_bus = VirtualBus(bustype='vsocketcan', channel='vcan0', bitrate=250000)
-            # Create a list of 500 zeros to represent the initial message
-            can_msg = [0] * 500
-            n = self.textbox_packet.get("0.0", "end").strip()
-            can_device_id = self.combobox_device_var.get()
-            can_id = int(can_device_id, 16)
-            if n.isdigit():
-                n = int(n)
-                if n == 0:
-                    tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID NUMBER OF PACKETS")
-                else:
-                    for x in range(n):
-                        a=random.randint(1,255)
-                        b=random.randint(1,255)
-                        c=random.randint(1,255)
-                        d=random.randint(1,255)
-                        e=random.randint(1,255)
-                        f=random.randint(1,255)
-                        g=random.randint(1,255)
-                        h=random.randint(1,255)
-                        print("random - ",a,b,c,d,e,f,g,h) # send can msg in this line
-                        values = "random - ",a,b,c,d,e,f,g,h
-                        msg = can.Message(arbitration_id=can_id, data=[a, b, c, d, e, f, g, h], is_extended_id=False)
-                        threading.Thread(target=self.add_line(values)).start()
-                        self.can_bus.send(msg)
-                        time.sleep(0.1)
+        try:
+            if can_interface_val == "":
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID INTERFACE")
+            elif bitrate_var == "":
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE SELECT VALID BITRATE")
+            elif packets == "":
+                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID NUMBER OF PACKETS")
+                self.textbox_packet.configure(border_color="red")
+            else:  
+                self.textbox_packet.configure(border_color="gray50")
+                self.can_bus = can.interface.Bus(bustype='socketcan', channel=can_interface_val, bitrate=bitrate_var)
+                self.button_2.configure(state="enabled", text="STOP FUZZING")
+                #for virtual device uncomment this
+                #can_bus = VirtualBus(bustype='vsocketcan', channel='vcan0', bitrate=250000)
+                # Create a list of 500 zeros to represent the initial message
+                can_msg = [0] * 500
+                n = self.textbox_packet.get("0.0", "end").strip()
+                can_device_id = self.combobox_device_var.get()
+                can_id = int(can_device_id, 16)
+                if n.isdigit():
+                    n = int(n)
+                    if n == 0:
+                        tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID NUMBER OF PACKETS")
+                    else:
+                        for x in range(n):
+                            a=random.randint(1,255)
+                            b=random.randint(1,255)
+                            c=random.randint(1,255)
+                            d=random.randint(1,255)
+                            e=random.randint(1,255)
+                            f=random.randint(1,255)
+                            g=random.randint(1,255)
+                            h=random.randint(1,255)
+                            print("random - ",a,b,c,d,e,f,g,h) # send can msg in this line
+                            values = "random - ",a,b,c,d,e,f,g,h
+                            msg = can.Message(arbitration_id=can_id, data=[a, b, c, d, e, f, g, h], is_extended_id=False)
+                            threading.Thread(target=self.add_line(values)).start()
+                            
+                            try:
+                                self.can_bus.send(msg)
+                            except ValueError as e:
+                                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message=f"Error while sending CAN message: {str(e)}")
+                                
+                            time.sleep(0.1)
                 self.can_bus.shutdown()
-            else:
-                # Handle invalid input
-                tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DATA")
+                #else:
+                    # Handle invalid input
+                    # tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID DATA")
+        except Exception as e:
+            # Handle other exceptions here
+            tkinter.messagebox.showinfo(title="ERROR MESSAGE", message=str(e))
 
 
     def add_line(self,msg):
@@ -690,18 +735,25 @@ class App(customtkinter.CTk):
     
     ####DOS BASED FUZZING BACKEND
     def send_can_message_dos(self, interface, can_id, data):
+        
         # Create a CAN bus instance
         bus = can.interface.Bus(bustype='socketcan', channel=interface)
 
         # Create a CAN message
         message = can.Message(arbitration_id=can_id, data=data, is_extended_id=False)
 
+        print("Sending Can Meesage: ", message)
+        
+        formatted_msg = f"Sending Can Meesage message: {received_msg}"
+        
+        threading.Thread(target=self.add_line(message)).start()
+        
         # Send the CAN message
         bus.send(message)
     
         #Close the CAN bus
         bus.shutdown()
-
+        
     def send_can_packets_from_file_dos(self, interface, file_path):
         # Open the file in read mode
         with open(file_path, 'r') as file:
@@ -717,9 +769,10 @@ class App(customtkinter.CTk):
                 data_bytes = bytes.fromhex(data)
 
                 # Send the CAN message
-                self.send_can_message_dos(interface, can_id, data_bytes)
+                self.send_can_message_dos(can_interface_val, can_id)
                 time.sleep(0.1)
-
+                
+    
     # Call the send_can_packets_from_file function with the provided file path and interface
     def dos_can_messages(self):
         self.textbox_display.delete("1.0",customtkinter.END)
@@ -730,7 +783,7 @@ class App(customtkinter.CTk):
         can_interface_val = self.combobox_interface.get()
         duration = self.textbox_packet_2.get("0.0", "end").strip()
         data_flood = self.textbox_packet_hexa.get("0.0", "end").strip()
-
+        
         bitrate_var = self.combo_bitrate.get()
         if can_interface_val == "":
             tkinter.messagebox.showinfo(title="ERROR MESSAGE", message="PLEASE ENTER VALID INTERFACE")
@@ -754,24 +807,19 @@ class App(customtkinter.CTk):
             can_device_id = self.combobox_device_var.get()
             # selected_can_id_decimal = int(can_device_id, 16)
             end_time = time.time() + float(duration)
-            data_flood = data_flood * 8
+            #data_flood = data_flood * 8
             with open('CAN_ID_DOS.txt', 'w') as sniff_can_msg:
                 while time.time() < end_time:
-                    # Receive message
+                    #Receive nessage
                     received_msg = self.can_bus.recv()
                     received_can_id = received_msg.arbitration_id
-                    #data = data_flood
-                    if data_flood == "00":
-                        formatted_data = "00000000"
-                    elif data_flood == "FF":
-                        formatted_data = "FFFFFFFF"
-                    else:
-                         formatted_data = data_flood * 8
-                    print("Received message:", received_msg)
-                    formatted_msg = f"Received message: {received_msg}"
+                    data = data_flood * 8
+                    #data = received_msg.data.hex()  
+                    sniff_can_msg.write(f"{received_can_id},{data}\n")
                     threading.Thread(target=self.add_line(received_msg)).start()
-                    sniff_can_msg.write(f"{received_can_id},{formatted_data}\n")
+            #self.dos_can_messages(interface)
             self.send_can_packets_from_file_dos(can_interface_val, file_path)
+               
             
             
 ###PGN ATTACK
