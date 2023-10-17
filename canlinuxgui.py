@@ -741,13 +741,8 @@ class App(customtkinter.CTk):
 
         # Create a CAN message
         message = can.Message(arbitration_id=can_id, data=data, is_extended_id=False)
-
-        print("Sending Can Meesage: ", message)
-        
-        formatted_msg = f"Sending Can Meesage message: {received_msg}"
-        
-        threading.Thread(target=self.add_line(message)).start()
-        
+               
+                
         # Send the CAN message
         bus.send(message)
     
@@ -761,15 +756,23 @@ class App(customtkinter.CTk):
             for line in file:
                 # Extract the CAN ID and data from the line
                 can_id, data = line.strip().split(',')
+                
+                # print("Sending Can Meesage: ", data)
+        
+                formatted_msg = f"Sending Can message: {data}"
+                print("Sending CAN message with ID:", can_id)
+                threading.Thread(target=self.add_line(formatted_msg)).start()
+
 
                 # Convert the CAN ID to an integer
                 can_id = int(can_id)
 
                 # Convert the hexadecimal data to bytes
                 data_bytes = bytes.fromhex(data)
-
+                
+                
                 # Send the CAN message
-                self.send_can_message_dos(can_interface_val, can_id)
+                self.send_can_message_dos(interface, can_id, data_bytes)
                 time.sleep(0.1)
                 
     
@@ -816,7 +819,8 @@ class App(customtkinter.CTk):
                     data = data_flood * 8
                     #data = received_msg.data.hex()  
                     sniff_can_msg.write(f"{received_can_id},{data}\n")
-                    threading.Thread(target=self.add_line(received_msg)).start()
+                    #threading.Thread(target=self.add_line(received_msg)).start()
+                    #print("Sending CAN message with ID:", can_id)
             #self.dos_can_messages(interface)
             self.send_can_packets_from_file_dos(can_interface_val, file_path)
                
