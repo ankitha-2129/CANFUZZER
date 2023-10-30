@@ -498,12 +498,12 @@ class App(customtkinter.CTk):
             if text == "CAN UP":
                 command = f"sudo ip link set {can_interface_val} down && sudo ip link set {can_interface_val} up type can bitrate {bitrate_var}"
                 subprocess.run(command, shell=True, check=True)
-                tkinter.messagebox.showinfo(title="Success", message="{can_interface_val} up and Running")
+                tkinter.messagebox.showinfo(title="Success", message="CAN INTERFACE UP and RUNNING")
                 self.start_can_button.configure(text="CAN DOWN")
             elif text == "CAN DOWN":
                 command = f"sudo ip link set {can_interface_val} down"
                 subprocess.run(command, shell=True, check=True)
-                tkinter.messagebox.showinfo(title="Success", message="{can_interface_val} Shutdown")
+                tkinter.messagebox.showinfo(title="Success", message="CAN INTERFACE SHUTDOWN")
                 self.start_can_button.configure(text="CAN UP")
         except Exception as e:
             tkinter.messagebox.showinfo(title="ERROR", message=str(e))
